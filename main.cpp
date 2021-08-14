@@ -1,168 +1,90 @@
 #include <iostream>
-
+#include<stdlib.h>
+#include<stdio.h>
+#include<string.h>
 using namespace std;
-struct elemt{ int info;
-            elemt *suiv;
+struct elemt{ char info;
+              elemt *suiv;
             };
-struct pile{ elemt *sommet;
+struct pile { elemt *sommet;
             };
-bool si_vide(pile *f)
-{   bool out=false;
-    if(f==NULL)
-        out=true;
-    else{
-        if(f->sommet==NULL)
-            out=true;
-        }
-    return out;
-}
-void empiler(pile *&f,int val)
-{ elemt *nov;
-  if(f==NULL)
-  {
-      f= new pile;
-      f->sommet=NULL;
-  }
-  nov=new elemt;
-  nov->info=val;
-  nov->suiv=f->sommet;
-  f->sommet=nov;
+bool si_vide(pile *p)
+{
+    bool out=false;
+    if((p==NULL)|(p->sommet==NULL))
+        out = true;
+ return out;
 
 }
-int depiler(pile *&f)
-{  elemt *p;
-    int q=-10000;
-    if(si_vide(f)==false)
-      { q=f->sommet->info;
-        p=f->sommet;
-       f->sommet=f->sommet->suiv;
-       delete p;
-      }
-return q;
-}
-void cree_pile(pile *&f,int tai)
- {  int valeur;
-     for(int i=0;i<tai;i++)
-     { cout<<"donner la valeur de "<<i+1<<" element:";
-       cin>>valeur;
-       empiler(f,valeur);
-     }
- }
-void supprimer(pile *&f)
-{ if(si_vide(f))
-     cout<<"la pile est vide!!!!\n";
-  else{
-    while(f->sommet!=NULL)
-       depiler(f);
-    cout<<"la pile a ete supprimer!!!!\n";
-    }
-}
-void affich_pile(pile *f)
-{   cout<<"-------------AFFICHAGE-------------------\n";
-    if(si_vide(f)==false)
+
+void empiler(pile *&p,char val)
+{ elemt *nov;
+    if(p==NULL)
     {
-        elemt *e;
-        e=f->sommet;
-        while(e!=NULL)
-        {   cout<<e->info<<endl;
-            e=e->suiv;
-        }
+        p = new pile;
+        p->sommet=NULL;
     }
-    else
-        cout<<"la pile est vide,rien a affiche!!!!!\n";
-    cout<<"----------------------------------------\n";
-}
-struct file{ elemt *first,*last;
-            };
-void emfiler(file *&f,int val)
-{ elemt *nov;
-  if(f==NULL)
-  {
-      f= new file;
-      f->first=NULL;
-      f->last=NULL;
-  }
-  nov=new elemt;
-  nov->info=val;
-  nov->suiv=NULL;
-  if(f->first==NULL)
-    f->first=nov;
-  else
-    f->last->suiv=nov;
-  f->last=nov;
+     nov = new elemt;
+     nov->info=val;
+     nov->suiv=p->sommet;
+     p->sommet=nov;
 
 }
-bool si_videf(file *f)
-{   bool out=false;
-    if (f==NULL)
-        out=true;
-    else{
-        if((f->first==NULL)&&(f->last==NULL))
-            out=true;
+char depiler(pile *&p)
+{  elemt *q;
+    char val='-1';
+    if(si_vide(p)==false)
+    { q=p->sommet;
+      val=p->sommet->info;
+      p->sommet=p->sommet->suiv;
+      delete q;
+
     }
-    return out;
+    return val;
 }
-int defiler(file *&f)
-{  elemt *p;
-   int q=-111111;
-    if(si_videf(f)==false)
-      { q=f->first->info;
-        p=f->first;
-        f->first=f->first->suiv;
-        delete p;
-        if(f->first==NULL)
-          f->last=NULL;
-      }
-return q;
+int long_ch(char ch[30])
+{
+    int nb=0;
+    int i=0;
+    while(ch[i]!='\0')
+    {
+        nb++;
+        i++;
+    }
+    return nb;
 }
-void invr_pile(pile *f)
-{   elemt *e;
-    file *p=NULL;
-    int val;
-        e=f->sommet;
-       while(e!=NULL)
-       {
-           emfiler(p,e->info);
-           e=e->suiv;
 
-       }
-       e=f->sommet;
-       while(e!=NULL)
-       {
-           depiler(f);
-           e=e->suiv;
-       }
-
-       e=p->first;
-       while(e!=NULL)
-       {
-           val=defiler(p);
-           empiler(f,val);
-           e=e->suiv;
-       }
-
-
+void invr_chain(char ch[30])
+{   pile *p=NULL;
+    elemt *e;
+    char c;
+    int l;
+    l=strlen(ch);
+    for(int i=0;i<l;i++)
+    {    char v;
+        v=ch[i];
+        empiler(p,v);
+    }
+    e=p->sommet;
+    while(e!=NULL)
+    {   c=depiler(p);
+        cout<<c;
+        e=e->suiv;
+    }
 }
+
 
 int main()
 {
-     pile *f=NULL;
+   char ch[30];
+   cout<<"donner votre chaine de caractere: ";
+   gets(ch);
+   //cin>>ch;
+   cout<<"--------------------------------------------\n";
+   cout<<ch<<endl;
+   cout<<"la chine inverse:\n";
+   invr_chain(ch);
+   cout<<"\n--------------------------------------------\n";
 
-    int tai;
-    cout<<"donner le nombre des elements de la pile:\n";
-    cin>>tai;
-    cree_pile(f,tai);
-    if(si_vide(f)==false)
-      {
-        if(f->sommet->suiv==NULL)
-            affich_pile(f);
-         else{
-                affich_pile(f);
-                invr_pile(f);
-                affich_pile(f);
-              }
-       supprimer(f);
-    }else{cout<<"la pile est vide,rien a inverse\n";
-         }
-    return 0;
+return 0;
 }
